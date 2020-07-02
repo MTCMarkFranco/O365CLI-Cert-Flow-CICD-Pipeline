@@ -1,0 +1,62 @@
+trigger:
+  branches:
+    include:
+      - '*'
+
+variables:
+  OFFICE365CLI_AADAPPID: '80fdc955-8677-4251-8d49-050d02071c15'
+  OFFICE365CLI_TENANT: '216e190d-67e4-4a6e-98bd-15b8468e5928'
+  o365_app_catalog_site_url: 'https://m365x130314.sharepoint.com/sites/appcat'
+  o365cli_app_catalog_scope: 'tenant'
+  node_version: '10.x'
+  cert_thumbprint: '5D500FE3B7543FCC61D4DCFD0C164563173009BC'
+  spfx-pkg: 'azure-app-insights.sppkg'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+    - script: echo Building!
+    - task: DownloadSecureFile@1
+      name: caCertificate
+      displayName: 'Download CA certificate'
+      inputs:
+        secureFile: 'protected.pfx'
+    - script: |
+        echo Found cert at $(caCertificate.secureFilePath) 
+    ##########################################
+    ## specify which node version to use
+    ##########################################
+    - task: UseNode@1
+      displayName: Set to Node.js $(node_version)
+      inputs:
+        version: $(node_version)
+      condition: ne('$(node_version)', '')
+
+    ##########################################
+    ## install Office 365 CLI
+    ##########################################
+    - script: sudo npm install --global @pnp/office365-cli
+      displayName: Install Office365 CLI
+
+    ##########################################
+    ## login to Office 365 CLI
+    ##########################################
+    - script: o365 login $(o365_app_catalog_site_url) --authType certificate --certificateFile $(caCertificate.secureFilePath) --thumbprint $(cert_thumbprint) --password pass@word1
+      displayName: Login to Office365
+
+    ##########################################
+    ## upload *.sppkg to the target app catalog
+    ##########################################
+    - script: o365 spo app add --filePath $(spfx_pkg) --appCatalogUrl $(o365_app_catalog_site_url) --scope tenant --overwrite
+      displayName: Upload SharePoint package to Site Collection App Catalog
+
+    ##########################################
+    ##deploy the package
+    ##########################################
+    - script: o365 spo app deploy --name $(spfx_pkg) --appCatalogUrl $(o365_app_catalog_site_url) --scope tenant
+      displayName: Deploy SharePoint package      
