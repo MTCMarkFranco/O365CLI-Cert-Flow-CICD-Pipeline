@@ -17,10 +17,10 @@ If you are interested in actually using the Azure App Insights and configure it 
 2. Update the SPO site url
 3. Replace the appInsightsKey GUID (with your instrumentation key)
 
-> spo customaction add -c 0d62cd95-51fa-4307-b7da-0ebcf03c0a9d -s Site -t "AzureAppInsights" -n "AzureAppInsights" -l "ClientSideExtension.ApplicationCustomizer" --verbose -u https://mod01.sharepoint.com/sites/ModernTeamSite -p '{"appInsightsKey":"4bc670b6-2b3a-491d-9984-4123dad1201b"}'
+> spo customaction add -c 0d62cd95-51fa-4307-b7da-0ebcf03c0a9d -s Site -t "AzureAppInsights" -n "AzureAppInsights" -l "ClientSideExtension.ApplicationCustomizer" --verbose -u https://YOURTENANT.sharepoint.com/sites/SITENAME -p '{"appInsightsKey":"4bc670b6-2b3a-491d-9984-4123dad1201b"}'
  
 - To list all the custom actions (spfx app customizer extensions) for the SPO site
->spo customaction list -u https://mod01.sharepoint.com/sites/ModernTeamSite 
+>spo customaction list -u https://YOURTENANT.sharepoint.com/sites/SITENAME 
 
 - To remove the custom action, use the GUID from the output of the above command in below command.
->spo customaction remove -i 1d7cc2d2-9ef4-40b5-838d-7135e02b2633 -u https://mod01.sharepoint.com/sites/ModernTeamSite
+>spo customaction remove -i 1d7cc2d2-9ef4-40b5-838d-7135e02b2633 -u https://YOURTENANT.sharepoint.com/sites/SITENAME
