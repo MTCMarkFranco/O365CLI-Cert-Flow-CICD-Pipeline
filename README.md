@@ -10,3 +10,5 @@ Please follow the steps detailed in this article before using the pipeline in th
 - To Enable a Power Automate Flow
 >o365 flow enable --environment "MS Personal Productivity (msdefault)" --name "Power Apps button" --asAdmin
 
+- Walkthrough on how to implement this is here:
+>https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/using-azure-ad-app-and-certificate-with-office-365-cli-in-azure/ba-p/1539553
