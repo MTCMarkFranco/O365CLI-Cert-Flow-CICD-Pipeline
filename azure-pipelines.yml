@@ -4,13 +4,10 @@ trigger:
       - '*'
 
 variables:
-  OFFICE365CLI_AADAPPID: '80fdc955-8677-4251-8d49-050d02071c15'
-  OFFICE365CLI_TENANT: '216e190d-67e4-4a6e-98bd-15b8468e5928'
-  o365_app_catalog_site_url: 'https://YOURTENANT.sharepoint.com/sites/APPCATALOGSITENAME'
-  o365cli_app_catalog_scope: 'tenant'
+  OFFICE365CLI_AADAPPID: '<APP_ID>'
+  OFFICE365CLI_TENANT: '<APP_TENANT>'
   node_version: '10.x'
-  cert_thumbprint: '5D500FE3B7543FCC61D4DCFD0C164563173009BC'
-  spfx-pkg: 'azure-app-insights.sppkg'
+  cert_thumbprint: '<THUMB_PRINT>'
 
 pool:
   vmImage: ubuntu-latest
@@ -46,17 +43,11 @@ stages:
     ##########################################
     ## login to Office 365 CLI
     ##########################################
-    - script: o365 login $(o365_app_catalog_site_url) --authType certificate --certificateFile $(caCertificate.secureFilePath) --thumbprint $(cert_thumbprint) --password pass@word1
+    - script: o365 login $(o365_app_catalog_site_url) --authType certificate --certificateFile $(caCertificate.secureFilePath) --thumbprint $(cert_thumbprint) --password "<CERT_PASSWORD>"
       displayName: Login to Office365
 
     ##########################################
-    ## upload *.sppkg to the target app catalog
+    ## Enable Flow
     ##########################################
-    - script: o365 spo app add --filePath $(spfx_pkg) --appCatalogUrl $(o365_app_catalog_site_url) --scope tenant --overwrite
-      displayName: Upload SharePoint package to Site Collection App Catalog
-
-    ##########################################
-    ##deploy the package
-    ##########################################
-    - script: o365 spo app deploy --name $(spfx_pkg) --appCatalogUrl $(o365_app_catalog_site_url) --scope tenant
-      displayName: Deploy SharePoint package      
+    - script: o365 flow enable --environment "MS Personal Productivity (msdefault)" --name "Power Apps button" --asAdmin
+      displayName: Enable Flow
